@@ -89,10 +89,10 @@ async def stream_outlines(
             )
         except Exception as e:
             traceback.print_exc()
-            raise HTTPException(
-                status_code=400,
-                detail="Failed to generate presentation outlines. Please try again.",
-            )
+            yield SSEErrorResponse(
+                detail=f"Failed to generate presentation outlines. Please try again. {str(e)}",
+            ).to_string()
+            return
 
         presentation_outlines = PresentationOutlineModel(**presentation_outlines_json)
 
