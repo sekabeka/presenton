@@ -484,7 +484,7 @@ async def check_if_api_request_is_valid(
                 detail="Template not found. Please use a valid template.",
             )
 
-    return presentation_id
+    return (presentation_id,)
 
 
 async def generate_presentation_handler(
