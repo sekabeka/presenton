@@ -1,5 +1,4 @@
 from typing import Optional
-import uuid
 from fastapi import APIRouter, Body, Depends, HTTPException, Path
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,7 +17,7 @@ class SubscribeToWebhookRequest(BaseModel):
 
 
 class SubscribeToWebhookResponse(BaseModel):
-    id: uuid.UUID
+    id: str
 
 
 @API_V1_WEBHOOK_ROUTER.post(
@@ -40,7 +39,7 @@ async def subscribe_to_webhook(
 
 @API_V1_WEBHOOK_ROUTER.delete("/unsubscribe", status_code=204)
 async def unsubscribe_to_webhook(
-    id: uuid.UUID = Body(
+    id: str = Body(
         embed=True, description="The ID of the webhook subscription to unsubscribe from"
     ),
     sql_session: AsyncSession = Depends(get_async_session),
