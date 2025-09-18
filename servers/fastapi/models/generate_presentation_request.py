@@ -37,3 +37,6 @@ class GeneratePresentationRequest(BaseModel):
     export_as: Literal["pptx", "pdf"] = Field(
         default="pptx", description="Export format"
     )
+    trigger_webhook: bool = Field(
+        default=False, description="Whether to trigger subscribed webhooks"
+    )
