@@ -37,7 +37,9 @@ const NewSlide = ({
     }
   };
   const { getFullDataByGroup, loading } = useLayout();
+
   const fullData = getFullDataByGroup(group);
+
 
   if (loading) {
     return (
