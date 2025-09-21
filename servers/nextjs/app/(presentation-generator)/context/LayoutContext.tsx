@@ -81,7 +81,7 @@ const createCacheKey = (groupName: string, fileName: string): string =>
 
 // Extract Babel compilation logic into a utility function
 const compileCustomLayout = (layoutCode: string, React: any, z: any) => {
-  
+
   const cleanCode = layoutCode
     .replace(/import\s+React\s+from\s+'react';?/g, "")
     .replace(/import\s*{\s*z\s*}\s*from\s+'zod';?/g, "")
@@ -350,7 +350,7 @@ export const LayoutProvider: React.FC<{
         "/api/v1/ppt/template-management/summary"
       );
       const customGroupData = await customGroupResponse.json();
-      
+
       const customFonts = new Map<string, string[]>();
       const customGroup = customGroupData.presentations;
       for (const group of customGroup) {
@@ -365,9 +365,9 @@ export const LayoutProvider: React.FC<{
         );
         const customLayoutsData = await customLayoutResponse.json();
         const allLayout = customLayoutsData.layouts;
-        
-      
-        
+
+
+
 
         const settings = {
           description: `Custom presentation layouts`,
@@ -541,7 +541,7 @@ export const LayoutProvider: React.FC<{
             layouts.push(layout);
           }
         }
-    setCustomTemplateFonts(customFonts);
+        setCustomTemplateFonts(customFonts);
         // Cache grouped layouts
         groupedLayouts.set(groupName, groupLayouts);
         fullDataByGroup.set(groupName, groupFullData);
@@ -549,7 +549,7 @@ export const LayoutProvider: React.FC<{
     } catch (err: any) {
       console.error("Compilation error:", err);
     }
- 
+
 
     return {
       layoutsById,

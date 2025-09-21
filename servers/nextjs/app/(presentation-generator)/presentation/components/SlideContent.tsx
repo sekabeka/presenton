@@ -75,12 +75,12 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
     try {
       trackEvent(MixpanelEvent.Slide_Delete_API_Call);
       // Add current state to past
-       dispatch(addToHistory({
+      dispatch(addToHistory({
         slides: presentationData?.slides,
         actionType: "DELETE_SLIDE"
       }));
       dispatch(deletePresentationSlide(slide.index));
-     
+
     } catch (error: any) {
       console.error("Error deleting slide:", error);
       toast.error("Error deleting slide.", {
@@ -176,12 +176,12 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
           {showNewSlideSelection && !loading && (
             <NewSlide
               index={index}
-              group={slide.layout_group}
+              group={`${slide.layout.split(":")[0]}`}
               setShowNewSlideSelection={setShowNewSlideSelection}
               presentationId={presentationId}
             />
           )}
-         
+
           {!isStreaming && !loading && (
             <ToolTip content="Delete slide">
               <div
