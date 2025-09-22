@@ -22,7 +22,7 @@ import {
 import { setPresentationData } from "@/store/slices/presentationGeneration";
 import { SortableSlide } from "./SortableSlide";
 import { SortableListItem } from "./SortableListItem";
-import { useGroupLayouts } from "../../hooks/useGroupLayouts";
+import { useTemplateLayouts } from "../../hooks/useTemplateLayouts";
 
 interface SidePanelProps {
   selectedSlide: number;
@@ -49,7 +49,7 @@ const SidePanel = ({
   const dispatch = useDispatch();
 
   // Use the centralized group layouts hook
-  const { renderSlideContent } = useGroupLayouts();
+  const { renderSlideContent } = useTemplateLayouts();
 
   useEffect(() => {
     if (window.innerWidth < 768) {
@@ -194,8 +194,8 @@ const SidePanel = ({
                       ? "bg-[#5141e5] hover:bg-[#4638c7]"
                       : "bg-white hover:bg-white"
                       }`}
-                    onClick={() =>{
-                      if(!isStreaming){
+                    onClick={() => {
+                      if (!isStreaming) {
                         setActive("list")
                       }
                     }}
@@ -256,7 +256,7 @@ const SidePanel = ({
                             selectedSlide={selectedSlide}
                             onSlideClick={onSlideClick}
                           />
-                         
+
                         ))}
                     </div>
                   </SortableContext>

@@ -16,7 +16,7 @@ import {
   deletePresentationSlide,
   updateSlide,
 } from "@/store/slices/presentationGeneration";
-import { useGroupLayouts } from "../../hooks/useGroupLayouts";
+import { useTemplateLayouts } from "../../hooks/useTemplateLayouts";
 import { usePathname } from "next/navigation";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import NewSlide from "../../components/NewSlide";
@@ -37,7 +37,7 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
   );
 
   // Use the centralized group layouts hook
-  const { renderSlideContent, loading } = useGroupLayouts();
+  const { renderSlideContent, loading } = useTemplateLayouts();
   const pathname = usePathname();
 
   const handleSubmit = async () => {
@@ -176,7 +176,7 @@ const SlideContent = ({ slide, index, presentationId }: SlideContentProps) => {
           {showNewSlideSelection && !loading && (
             <NewSlide
               index={index}
-              group={`${slide.layout.split(":")[0]}`}
+              templateID={`${slide.layout.split(":")[0]}`}
               setShowNewSlideSelection={setShowNewSlideSelection}
               presentationId={presentationId}
             />

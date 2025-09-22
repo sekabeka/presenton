@@ -5,26 +5,28 @@ export interface LayoutInfo {
     schema: any
     sampleData: any
     fileName: string
-    groupName: string
+    templateID: string
     layoutId: string
 }
 
-export interface GroupSetting {
+export interface TemplateSetting {
     description: string;
     ordered: boolean;
     default?: boolean;
 }
 
-export interface LayoutGroup {
-    groupName: string
+export interface TemplateResponse {
+    templateID: string
+    templateName?: string
     layouts: LayoutInfo[]
-    settings: GroupSetting
+    settings: TemplateSetting | null
 }
 
-export interface GroupedLayoutsResponse {
-    groupName: string
-    files: string[]
-    settings: GroupSetting | null
+export interface TemplateResponse {
+    templateName?: string
+    templateID: string
+    files: string[],
+    settings: TemplateSetting | null
 }
 
 export interface LoadingState {

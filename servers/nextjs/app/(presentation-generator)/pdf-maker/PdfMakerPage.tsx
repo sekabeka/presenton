@@ -8,18 +8,18 @@ import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { AlertCircle } from "lucide-react";
-import { useGroupLayouts } from "../hooks/useGroupLayouts";
 import { setPresentationData } from "@/store/slices/presentationGeneration";
 import { DashboardApi } from "../services/api/dashboard";
 import { useLayout } from "../context/LayoutContext";
 import { useFontLoader } from "../hooks/useFontLoader";
+import { useTemplateLayouts } from "../hooks/useTemplateLayouts";
 
 
 
 
 
 const PresentationPage = ({ presentation_id }: { presentation_id: string }) => {
-  const { renderSlideContent, loading } = useGroupLayouts();
+  const { renderSlideContent, loading } = useTemplateLayouts();
   const pathname = usePathname();
   const [contentLoading, setContentLoading] = useState(true);
   const { getCustomTemplateFonts } = useLayout()

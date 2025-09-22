@@ -15,18 +15,24 @@ import "prismjs/components/prism-jsx";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useFontLoader } from "../../hooks/useFontLoader";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
+import { getHeader } from "../../services/api/header";
 
 const GroupLayoutPreview = () => {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const rawSlug = ((): string => {
+    const value: any = (params as any)?.slug;
+    if (typeof value === "string") return value;
+    if (Array.isArray(value) && value.length > 0 && typeof value[0] === "string") return value[0];
+    return "";
+  })();
   const pathname = usePathname();
 
-  const { getFullDataByGroup, loading, refetch } = useLayout();
-  const layoutGroup = getFullDataByGroup(slug);
+  const { getFullDataByTemplateID, loading, refetch } = useLayout();
+  const layoutGroup = getFullDataByTemplateID(rawSlug);
 
-  const presentationId = slug.replace("custom-", "");
-  const isCustom = slug.includes("custom-");
+  const isCustom = rawSlug.startsWith("custom-");
+  const presentationId = isCustom && rawSlug.length > 7 ? rawSlug.slice(7) : "";
 
   const [editorOpen, setEditorOpen] = useState(false);
   const [currentCode, setCurrentCode] = useState("");
@@ -37,13 +43,15 @@ const GroupLayoutPreview = () => {
   const [layoutsMap, setLayoutsMap] = useState<Record<string, { layout_id: string; layout_name: string; layout_code: string; fonts?: string[] }>>({});
   const [templateMeta, setTemplateMeta] = useState<{ name?: string; description?: string } | null>(null);
 
- 
+
 
   useEffect(() => {
     const loadCustomLayouts = async () => {
-      if (!isCustom) return;
+      if (!isCustom || !presentationId) return;
       try {
-        const res = await fetch(`/api/v1/ppt/template-management/get-templates/${presentationId}`);
+        const res = await fetch(`/api/v1/ppt/template-management/get-templates/${presentationId}`, {
+          headers: getHeader(),
+        });
         if (!res.ok) return;
         const data = await res.json();
         const map: Record<string, { layout_id: string; layout_name: string; layout_code: string; fonts?: string[] }> = {};
@@ -80,7 +88,7 @@ const GroupLayoutPreview = () => {
       script.async = true;
       document.head.appendChild(script);
     }
-  }, [slug]);
+  }, [rawSlug]);
 
   // Ensure fonts are injected if layoutsMap changes dynamically
   useEffect(() => {
@@ -102,12 +110,12 @@ const GroupLayoutPreview = () => {
     return <LoadingStates type="empty" />;
   }
   const deleteLayouts = async () => {
-    const presentationId = slug.replace('custom-','');
     refetch();
     router.back();
     const response = await fetch(`/api/v1/ppt/template-management/delete-templates/${presentationId}`, {
       method: "DELETE",
-    }); 
+      headers: getHeader(),
+    });
     if (response.ok) {
       router.push("/template-preview");
     }
@@ -148,7 +156,7 @@ const GroupLayoutPreview = () => {
       };
       const res = await fetch(`/api/v1/ppt/template-management/save-templates`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getHeader(),
         body: JSON.stringify(payload),
       });
       if (!res.ok) return;
@@ -198,24 +206,24 @@ const GroupLayoutPreview = () => {
               className="flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
-              All Groups
+              All Templates
             </Button>
-             {slug.includes('custom-') && <button className=" border border-red-200 flex justify-center items-center gap-2 text-red-700 px-4 py-1 rounded-md" onClick={() => {
-            trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_Button_Clicked, { pathname });
-            trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_API_Call);
-            deleteLayouts();
-          }}><Trash2 className="w-4 h-4" />Delete</button>}
+            {isCustom && <button className=" border border-red-200 flex justify-center items-center gap-2 text-red-700 px-4 py-1 rounded-md" onClick={() => {
+              trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_Button_Clicked, { pathname });
+              trackEvent(MixpanelEvent.TemplatePreview_Delete_Templates_API_Call);
+              deleteLayouts();
+            }}><Trash2 className="w-4 h-4" />Delete</button>}
           </div>
 
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 capitalize">
-              {templateMeta?.name || layoutGroup[0].groupName} Layouts
+              {templateMeta?.name || layoutGroup[0].templateID} Layouts
             </h1>
             <p className="text-gray-600 mt-2">
-              {layoutGroup.length} layout{layoutGroup.length !== 1 ? "s" : ""} • {templateMeta?.description || layoutGroup[0].groupName}
+              {layoutGroup.length} layout{layoutGroup.length !== 1 ? "s" : ""} • {templateMeta?.description || layoutGroup[0].templateID}
             </p>
           </div>
-         
+
         </div>
       </header>
 
@@ -232,7 +240,7 @@ const GroupLayoutPreview = () => {
 
             return (
               <Card
-                key={`${layoutGroup[0].groupName}-${index}`}
+                key={`${layoutGroup[0].templateID}-${index}`}
                 className="overflow-hidden shadow-md hover:shadow-lg transition-shadow"
               >
                 {/* Layout Header */}
@@ -247,7 +255,7 @@ const GroupLayoutPreview = () => {
                           {fileName}
                         </span>
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {layoutGroup[0].groupName}
+                          {layoutGroup[0].templateID}
                         </span>
                       </div>
                     </div>
@@ -289,7 +297,7 @@ const GroupLayoutPreview = () => {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="text-center text-gray-600">
             <p>
-              {layoutGroup[0].groupName} • {layoutGroup.length} components
+              {layoutGroup[0].templateID} • {layoutGroup.length} components
             </p>
           </div>
         </div>

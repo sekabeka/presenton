@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slide } from "../types/slide";
-import { useGroupLayouts } from "../hooks/useGroupLayouts";
+import { useTemplateLayouts } from "../hooks/useTemplateLayouts";
 
 
 interface PresentationModeProps {
@@ -33,7 +33,7 @@ const PresentationMode: React.FC<PresentationModeProps> = ({
   onSlideChange,
 
 }) => {
-  const { renderSlideContent } = useGroupLayouts();
+  const { renderSlideContent } = useTemplateLayouts();
   // Modify the handleKeyPress to prevent default behavior
   const handleKeyPress = useCallback(
     (event: KeyboardEvent) => {
