@@ -35,7 +35,7 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
         const map: Record<string, { lastUpdatedAt?: number; name?: string; description?: string }> = {};
         if (data && Array.isArray(data.presentations)) {
           for (const p of data.presentations) {
-            const slug = `custom-${p.presentation}`;
+            const slug = `custom-${p.presentation_id}`;
             map[slug] = {
               lastUpdatedAt: p.last_updated_at ? new Date(p.last_updated_at).getTime() : 0,
               name: p.template?.name,
