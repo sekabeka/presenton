@@ -8,13 +8,13 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 interface NewSlideProps {
   setShowNewSlideSelection: (show: boolean) => void;
-  group: string;
+  templateID: string;
   index: number;
   presentationId: string;
 }
 const NewSlide = ({
   setShowNewSlideSelection,
-  group,
+  templateID,
   index,
   presentationId,
 }: NewSlideProps) => {
@@ -25,7 +25,7 @@ const NewSlide = ({
         id: uuidv4(),
         index: index,
         content: sampleData,
-        layout_group: group,
+        layout_group: templateID,
         layout: id,
         presentation: presentationId,
       };
@@ -36,10 +36,8 @@ const NewSlide = ({
       toast.error("Error adding new slide");
     }
   };
-  const { getFullDataByGroup, loading } = useLayout();
-
-  const fullData = getFullDataByGroup(group);
-
+  const { getFullDataByTemplateID, loading } = useLayout();
+  const fullData = getFullDataByTemplateID(templateID);
 
   if (loading) {
     return (
@@ -73,7 +71,7 @@ const NewSlide = ({
           return (
             <div
               onClick={() => handleNewSlide(sampleData, layoutId)}
-              key={`${group}-${index}`}
+              key={`${layoutId}-${index}`}
               className=" relative cursor-pointer overflow-hidden aspect-video"
             >
               <div className="absolute cursor-pointer bg-transparent z-40 top-0 left-0 w-full h-full" />

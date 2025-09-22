@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useGroupLayouts } from "@/app/(presentation-generator)/hooks/useGroupLayouts";
+import { useTemplateLayouts } from "@/app/(presentation-generator)/hooks/useTemplateLayouts";
 
 export const PresentationCard = ({
   id,
@@ -26,7 +26,7 @@ export const PresentationCard = ({
   onDeleted?: (presentationId: string) => void;
 }) => {
   const router = useRouter();
-  const { renderSlideContent } = useGroupLayouts();
+  const { renderSlideContent } = useTemplateLayouts();
 
 
 

@@ -7,14 +7,14 @@ import { useSelector } from "react-redux";
 import { OverlayLoader } from "@/components/ui/overlay-loader";
 import Wrapper from "@/components/Wrapper";
 import OutlineContent from "./OutlineContent";
-import LayoutSelection from "./LayoutSelection";
 import EmptyStateView from "./EmptyStateView";
 import GenerateButton from "./GenerateButton";
 
-import { TABS, LayoutGroup } from "../types/index";
+import { TABS, Template } from "../types/index";
 import { useOutlineStreaming } from "../hooks/useOutlineStreaming";
 import { useOutlineManagement } from "../hooks/useOutlineManagement";
 import { usePresentationGeneration } from "../hooks/usePresentationGeneration";
+import TemplateSelection from "./TemplateSelection";
 
 const OutlinePage: React.FC = () => {
   const { presentation_id, outlines } = useSelector(
@@ -22,14 +22,14 @@ const OutlinePage: React.FC = () => {
   );
 
   const [activeTab, setActiveTab] = useState<string>(TABS.OUTLINE);
-  const [selectedLayoutGroup, setSelectedLayoutGroup] = useState<LayoutGroup | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   // Custom hooks
   const streamState = useOutlineStreaming(presentation_id);
   const { handleDragEnd, handleAddSlide } = useOutlineManagement(outlines);
   const { loadingState, handleSubmit } = usePresentationGeneration(
     presentation_id,
     outlines,
-    selectedLayoutGroup,
+    selectedTemplate,
     setActiveTab
   );
   if (!presentation_id) {
@@ -54,8 +54,9 @@ const OutlinePage: React.FC = () => {
               <TabsTrigger value={TABS.LAYOUTS}>Select Template</TabsTrigger>
             </TabsList>
 
-            <div className="flex-grow w-full overflow-y-auto custom_scrollbar">
-              <TabsContent value={TABS.OUTLINE}>
+            <div className="flex-grow w-full mx-auto">
+              <TabsContent value={TABS.OUTLINE} className="h-[calc(100vh-16rem)] overflow-y-auto custom_scrollbar"
+              >
                 <div>
                   <OutlineContent
                     outlines={outlines}
@@ -69,11 +70,11 @@ const OutlinePage: React.FC = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value={TABS.LAYOUTS}>
+              <TabsContent value={TABS.LAYOUTS} className="h-[calc(100vh-16rem)] overflow-y-auto custom_scrollbar">
                 <div>
-                  <LayoutSelection
-                    selectedLayoutGroup={selectedLayoutGroup}
-                    onSelectLayoutGroup={setSelectedLayoutGroup}
+                  <TemplateSelection
+                    selectedTemplate={selectedTemplate}
+                    onSelectTemplate={setSelectedTemplate}
                   />
                 </div>
               </TabsContent>
@@ -85,9 +86,10 @@ const OutlinePage: React.FC = () => {
         <div className="py-4 border-t border-gray-200">
           <div className="max-w-[1200px] mx-auto">
             <GenerateButton
+              outlineCount={outlines.length}
               loadingState={loadingState}
               streamState={streamState}
-              selectedLayoutGroup={selectedLayoutGroup}
+              selectedTemplate={selectedTemplate}
               onSubmit={handleSubmit}
             />
           </div>

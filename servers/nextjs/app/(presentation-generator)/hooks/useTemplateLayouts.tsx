@@ -8,32 +8,28 @@ import TiptapTextReplacer from "../components/TiptapTextReplacer";
 import { updateSlideContent } from "../../../store/slices/presentationGeneration";
 import { Loader2 } from "lucide-react";
 
-export const useGroupLayouts = () => {
+export const useTemplateLayouts = () => {
   const dispatch = useDispatch();
-  const { getLayoutByIdAndGroup, getLayoutsByGroup, getLayout, loading } =
+  const { getLayoutById, getLayout, loading } =
     useLayout();
 
-  const getGroupLayout = useMemo(() => {
+  const getTemplateLayout = useMemo(() => {
     return (layoutId: string, groupName: string) => {
-      const layout = getLayoutByIdAndGroup(layoutId, groupName);
+      const layout = getLayoutById(layoutId);
       if (layout) {
         return getLayout(layoutId);
       }
       return null;
     };
-  }, [getLayoutByIdAndGroup, getLayout]);
+  }, [getLayoutById, getLayout]);
 
-  const getGroupLayouts = useMemo(() => {
-    return (groupName: string) => {
-      return getLayoutsByGroup(groupName);
-    };
-  }, [getLayoutsByGroup]);
+
 
   // Render slide content with group validation, automatic Tiptap text editing, and editable images/icons
   const renderSlideContent = useMemo(() => {
     return (slide: any, isEditMode: boolean) => {
-     
-      const Layout = getGroupLayout(slide.layout, slide.layout_group);
+
+      const Layout = getTemplateLayout(slide.layout, slide.layout_group);
       if (loading) {
         return (
           <div className="flex flex-col items-center justify-center aspect-video h-full bg-gray-100 rounded-lg">
@@ -92,11 +88,10 @@ export const useGroupLayouts = () => {
         </SlideErrorBoundary>
       );
     };
-  }, [getGroupLayout, dispatch]);
+  }, [getTemplateLayout, dispatch]);
 
   return {
-    getGroupLayout,
-    getGroupLayouts,
+    getTemplateLayout,
     renderSlideContent,
     loading,
   };
