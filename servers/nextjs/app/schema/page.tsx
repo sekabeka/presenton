@@ -4,13 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { useLayout } from "../(presentation-generator)/context/LayoutContext";
 const page = () => {
   const searchParams = useSearchParams();
-  const group = searchParams.get("group");
-  const { getLayoutsByGroup, getGroupSetting, loading } = useLayout();
-  if (!group) {
-    return <div>No group provided</div>;
+  const templateID = searchParams.get("group");
+  const { getLayoutsByTemplateID, getTemplateSetting, loading } = useLayout();
+  if (!templateID) {
+    return <div>No templateID provided</div>;
   }
-  const layouts = getLayoutsByGroup(group);
-  const settings = getGroupSetting(group);
+  const layouts = getLayoutsByTemplateID(templateID);
+  const settings = getTemplateSetting(templateID);
   return (
     <div>
       {loading ? (

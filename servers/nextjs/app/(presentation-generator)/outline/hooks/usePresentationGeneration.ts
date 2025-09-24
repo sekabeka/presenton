@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { clearPresentationData } from "@/store/slices/presentationGeneration";
 import { PresentationGenerationApi } from "../../services/api/presentation-generation";
-import { LayoutGroup, LoadingState, TABS } from "../types/index";
+import { Template, LoadingState, TABS } from "../types/index";
 import { MixpanelEvent, trackEvent } from "@/utils/mixpanel";
 
 const DEFAULT_LOADING_STATE: LoadingState = {
@@ -17,7 +17,7 @@ const DEFAULT_LOADING_STATE: LoadingState = {
 export const usePresentationGeneration = (
   presentationId: string | null,
   outlines: { content: string }[] | null,
-  selectedLayoutGroup: LayoutGroup | null,
+  selectedTemplate: Template | null,
   setActiveTab: (tab: string) => void
 ) => {
   const dispatch = useDispatch();
@@ -32,13 +32,13 @@ export const usePresentationGeneration = (
       return false;
     }
 
-    if (!selectedLayoutGroup) {
+    if (!selectedTemplate) {
       toast.error("Select Layout Group", {
         description: "Please select a layout group before generating presentation",
       });
       return false;
     }
-    if (!selectedLayoutGroup.slides.length) {
+    if (!selectedTemplate.slides.length) {
       toast.error("No Slide Schema found", {
         description: "Please select a Group before generating presentation",
       });
@@ -46,19 +46,19 @@ export const usePresentationGeneration = (
     }
 
     return true;
-  }, [outlines, selectedLayoutGroup]);
+  }, [outlines, selectedTemplate]);
 
   const prepareLayoutData = useCallback(() => {
-    if (!selectedLayoutGroup) return null;
+    if (!selectedTemplate) return null;
     return {
-      name: selectedLayoutGroup.name,
-      ordered: selectedLayoutGroup.ordered,
-      slides: selectedLayoutGroup.slides
+      name: selectedTemplate.name,
+      ordered: selectedTemplate.ordered,
+      slides: selectedTemplate.slides
     };
-  }, [selectedLayoutGroup]);
+  }, [selectedTemplate]);
 
   const handleSubmit = useCallback(async () => {
-    if (!selectedLayoutGroup) {
+    if (!selectedTemplate) {
       setActiveTab(TABS.LAYOUTS);
       return;
     }
@@ -96,7 +96,7 @@ export const usePresentationGeneration = (
     } finally {
       setLoadingState(DEFAULT_LOADING_STATE);
     }
-  }, [validateInputs, prepareLayoutData, presentationId, outlines, dispatch, router]);
+  }, [validateInputs, prepareLayoutData, presentationId, outlines, dispatch, router, selectedTemplate]);
 
   return { loadingState, handleSubmit };
 }; 
