@@ -172,7 +172,7 @@ const TemplateSelection: React.FC<TemplateSelectionProps> = ({
             <TemplateLayouts
               key={template.id}
               template={template}
-              onSelectTemplate={onSelectTemplate}
+              onSelectTemplate={handleTemplateSelection}
               selectedTemplate={selectedTemplate}
             />
           ))}
