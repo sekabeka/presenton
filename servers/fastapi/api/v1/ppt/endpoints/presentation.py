@@ -543,6 +543,7 @@ async def generate_presentation_handler(
                 request.instructions,
                 request.include_title_slide,
                 request.web_search,
+                request.smart_web_search,
             ):
 
                 if isinstance(chunk, HTTPException):

@@ -92,14 +92,28 @@ async def generate_ppt_outline(
     instructions: Optional[str] = None,
     include_title_slide: bool = True,
     web_search: bool = False,
+    smart_web_search: bool = True,  # НОВЫЙ ПАРАМЕТР
 ):
     model = get_model()
     response_model = get_presentation_outline_model_with_n_slides(n_slides)
 
-    client = LLMClient()
+    # Используем EnhancedLLMClient для умного веб-поиска
+    from services.web_search_analysis.enhanced_llm_client import EnhancedLLMClient
+    client = EnhancedLLMClient()
 
     try:
-        async for chunk in client.stream_structured(
+        # Определяем нужен ли веб-поиск
+        tools = None
+        if web_search and smart_web_search:
+            # Умное определение
+            needs_web_search = await client.should_enable_web_grounding(content)
+            if needs_web_search:
+                tools = [SearchWebTool]
+        elif web_search:
+            # Обычное определение (существующая логика)
+            tools = [SearchWebTool] if client.enable_web_grounding() else None
+
+        async for chunk in client.stream_structured_with_smart_web_search(
             model,
             get_messages(
                 content,
@@ -113,11 +127,9 @@ async def generate_ppt_outline(
             ),
             response_model.model_json_schema(),
             strict=True,
-            tools=(
-                [SearchWebTool]
-                if (client.enable_web_grounding() and web_search)
-                else None
-            ),
+            user_query=content,
+            presentation_context={"n_slides": n_slides, "language": language},
+            tools=tools,
         ):
             yield chunk
     except Exception as e:

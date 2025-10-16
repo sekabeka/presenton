@@ -41,6 +41,7 @@ class PresentationModel(SQLModel, table=True):
     include_table_of_contents: bool = Field(sa_column=Column(Boolean), default=False)
     include_title_slide: bool = Field(sa_column=Column(Boolean), default=True)
     web_search: bool = Field(sa_column=Column(Boolean), default=False)
+    smart_web_search: bool = Field(sa_column=Column(Boolean), default=True)
 
     def get_new_presentation(self):
         return PresentationModel(

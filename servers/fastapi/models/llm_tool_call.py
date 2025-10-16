@@ -1,5 +1,5 @@
 from typing import Literal, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel  # pyright: ignore[reportMissingImports]
 
 
 class LLMToolCall(BaseModel):
