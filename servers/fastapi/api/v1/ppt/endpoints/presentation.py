@@ -303,6 +303,7 @@ async def stream_presentation(
             except HTTPException as e:
                 yield SSEErrorResponse(detail=e.detail).to_string()
                 return
+            # возможно валидацию можно вставить сюда
 
             slide = SlideModel(
                 presentation=id,
@@ -698,6 +699,7 @@ async def generate_presentation_handler(
                 )
                 for i in range(start, end)
             ]
+            # возможно валидацию можно вставить сюда
             batch_contents: List[dict] = await asyncio.gather(*content_tasks)
 
             # Build slides for this batch

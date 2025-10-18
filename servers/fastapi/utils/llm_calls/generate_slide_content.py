@@ -140,5 +140,6 @@ async def get_slide_content_from_type_and_outline(
         )
         return response
 
+    # возможно валидацию можно вставить сюда
     except Exception as e:
         raise handle_llm_client_exceptions(e)
